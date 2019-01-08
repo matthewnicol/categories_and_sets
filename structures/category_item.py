@@ -3,6 +3,8 @@ A rough framework for dealing with interconnected fuzzy categories
 of things, leveraging set theory and category theory.
 """
 
+from .derivation import Derivation
+
 # When we make a new category, store it in here. On the individual categories,
 # use helper function that returns metadata to implement a traversal point.
 category_directory = {}
@@ -11,6 +13,7 @@ category_directory = {}
 # it is a set of. On the individual categories, use helper function that
 # returns metadata to implement a traversal point.
 set_directory = {}
+
 
 class CategoryItem:
     """
@@ -26,7 +29,7 @@ class CategoryItem:
 
         self._identity = self.__class__.__name__.lower()
         self.context = {k: v for k,v in context.items()}
-        self.identity = identity
+        self.identity = str(identity)
 
     def __getattr__(self, item):
         """
@@ -48,11 +51,15 @@ class CategoryItem:
 
             # This is a traversal point to a set of items.
             elif hasattr(self, '_set_jump_'+item):
+
                 traversal = getattr(self, '_set_jump_' + item)()
+                ident_key = self._identity if not traversal.assume_identity else traversal.assume_identity
+                pass_context = {**self.context, ident_key: self.identity}
+                items = Derivation.find_items(set_directory[traversal.target].single.__name__, pass_context)
+
                 return set_directory[traversal.target](
-                    items=([] if not traversal.target_identity else traversal.target_identity),
-                    **{**self.context,
-                       (self._identity if not traversal.assume_identity else traversal.assume_identity): self.identity}
+                    items=(items if not traversal.target_identity else traversal.target_identity),
+                    **pass_context
                 )
 
         # No attribute exists for this item and it is not a defined traversal point
@@ -104,7 +111,10 @@ class CategorySet:
 
         self.iterpos = 0
         self.context = context
-        self.items = items if items else self.generate_items()
+        if context == {}:
+            self.items = Derivation.find_items(self.single.__name__, {})
+        else:
+            self.items = items
 
     def generate_items(self):
         """
@@ -150,6 +160,7 @@ class CategorySet:
         """
 
         set_directory[cls.single.__name__] = cls
+        set_directory[cls.__name__] = cls
 
     def __getitem__(self, item):
         return self.single.open(self.items[item], **self.context)
