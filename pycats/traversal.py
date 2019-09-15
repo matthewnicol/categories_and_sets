@@ -11,9 +11,6 @@ class Traversal:
         self.assume_identity = assume_identity
         self.target_identity = target_identity
 
-class SetTraversal(Traversal):
-    pass
-
 class ItemTraversal(Traversal):
     def __init__(self, target, target_identity, assume_identity=None):
         super().__init__(target, target_identity, assume_identity)
