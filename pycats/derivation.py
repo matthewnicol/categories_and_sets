@@ -1,4 +1,4 @@
-from structures.database import query
+from pycats.database import query
 derivations = []
 
 
