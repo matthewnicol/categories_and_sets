@@ -11,6 +11,12 @@ class Derivation:
 
     @classmethod
     def find_items(cls, entity, context):
+        """
+        Look for items in this derivation.
+        :param entity:
+        :param context:
+        :return:
+        """
         for x in derivations:
             if x.perfect_match(entity, context):
                 return x.accessor(context)
@@ -24,7 +30,6 @@ class Derivation:
                 return x.accessor(context)
 
         raise AttributeError(f"Cannot find identity derivation for '{entity}' in directory")
-
 
     def perfect_match(self, entity, context):
         return self.context and self.entity == entity and sorted([x for x in context]) == self.context
