@@ -1,4 +1,3 @@
-from pycats.database import query
 derivations = []
 
 
