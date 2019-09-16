@@ -138,3 +138,8 @@ class CategorySet:
 
     def __getitem__(self, item):
         return self.single.open(self.items[item], **self.context)
+
+    def __eq__(self, other):
+        if self.__class__.__name__ == other.__class__.__name__:
+            if sorted(other.items) == sorted(self.items):
+                return True
