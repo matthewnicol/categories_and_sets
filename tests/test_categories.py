@@ -20,7 +20,6 @@ class TestCategoryItem(unittest.TestCase):
         FolderSet = Folder.set()
         self.assertEqual(FolderSet.__name__, 'FolderSet')
 
-
     def test_basic_derivation(self):
         """
         Does a hardcoded derivation show up when we try to traverse to it with an appropriate context
@@ -79,11 +78,8 @@ class TestCategoryItem(unittest.TestCase):
         class Folder(CategoryItem):
             files = Traversal('File')
 
-
         class File(CategoryItem):
             pass
-
-
 
         Computer.derivation(None, lambda x: ['home', 'work', 'library', 'school'])
 
