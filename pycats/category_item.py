@@ -75,9 +75,11 @@ class CategoryItem:
     def __init_subclass__(cls, **kwargs):
         """
         Record subclasses of this CategoryItem in the category directory.
+        Also make the set so that the user doesn't have to explicitly define it
         """
 
         category_directory[cls.__name__] = cls
+        set_directory[cls.__name__] = cls.set()
 
 
 class CategorySet:
