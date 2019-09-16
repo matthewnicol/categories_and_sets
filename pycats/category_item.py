@@ -41,43 +41,10 @@ class CategoryItem:
 
     @classmethod
     def set(cls):
-        if not hasattr(cls, '_set'):
-            cls._set = type(f"{cls.__name__}Set", (CategorySet,), {'single': cls})
-        return cls._set
-
-    # def __getattr__(self, item):
-    #     """
-    #     Intercept traversals out to other items and sets. These are dynamically
-    #     defined, and can be circular.
-    #     """
-    #
-    #     # Prevent recursive lookups, _item_jump_x, _item_jump_item_jump_x, etc etc
-    #     if '_item_jump_' not in item and '_set_jump_' not in item:
-    #
-    #         # This is a traversal point to a single item.
-    #         if hasattr(self, '_item_jump_'+item):
-    #             traversal = getattr(self, '_item_jump_'+item)()
-    #             return category_directory[traversal.target](
-    #                 traversal.target_identity,
-    #                 **{**self.context,
-    #                    (self._identity if not traversal.assume_identity else traversal.assume_identity): self.identity}
-    #             )
-    #
-    #         # This is a traversal point to a set of items.
-    #         elif hasattr(self, '_set_jump_'+item):
-    #
-    #             traversal = getattr(self, '_set_jump_' + item)()
-    #             ident_key = self._identity if not traversal.assume_identity else traversal.assume_identity
-    #             pass_context = {**self.context, ident_key: self.identity}
-    #             items = Derivation.find_items(set_directory[traversal.target].single.__name__, pass_context)
-    #
-    #             return set_directory[traversal.target](
-    #                 items=(items if not traversal.target_identity else traversal.target_identity),
-    #                 **pass_context
-    #             )
-    #
-    #     # No attribute exists for this item and it is not a defined traversal point
-    #     raise AttributeError
+        return type(f"{cls.__name__}Set", (CategorySet,), {'single': cls})
+        #if not hasattr(cls, '_set'):
+        #    cls._set = type(f"{cls.__name__}Set", (CategorySet,), {'single': cls})
+        #return cls._set
 
     @classmethod
     def open(cls, identity, **context):
