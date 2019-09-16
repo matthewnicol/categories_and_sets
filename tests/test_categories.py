@@ -51,10 +51,69 @@ class TestCategoryItem(unittest.TestCase):
         File.derivation(None, lambda x: [])
 
         FileSet = File.set()
-        FolderSet = Folder.set()
 
         f = Folder('testing')
         self.assertEqual(f.my_files, FileSet(items=[]))
 
+    def test_traversal_with_aliasing(self):
+        class Folder(CategoryItem):
+            sub_folders = Traversal('Folder', rename_this='parent_folder')
+
+        Folder.derivation(
+            ['parent_folder'],
+            lambda x: [f"/{x['parent_folder']}/files", f"/{x['parent_folder']}/cache"]
+        )
+
+        x = Folder('test_folder')
+        sf = x.sub_folders
+        self.assertEqual(sf.context['parent_folder'], 'test_folder')
+
+        self.assertEqual(sf.items, ['/test_folder/files', '/test_folder/cache'])
+
+    def test_multiple_traversals(self):
+        class Computer(CategoryItem):
+            folders = Traversal('Folder')
+
+        ComputerSet = Computer.set()
+
+        class Folder(CategoryItem):
+            files = Traversal('File')
 
 
+        class File(CategoryItem):
+            pass
+
+
+
+        Computer.derivation(None, lambda x: ['home', 'work', 'library', 'school'])
+
+        def folders(context):
+            if context['computer'] == 'home':
+                return ['Documents', 'Videos', 'Pictures', 'Memes']
+            elif context['computer'] == 'work':
+                return ['Documents', 'Emails']
+            elif context['computer'] == 'library':
+                return ['Catalogue', 'Archives', 'Journals']
+            elif context['computer'] == 'school':
+                return ['Projects', 'Documents', 'Lectures']
+
+        Folder.derivation(['computer'], folders)
+
+        def files(context):
+            if context['computer'] == 'home' and context['folder'] == 'Documents':
+                return ['homedoc1.xls', 'homedoc2.pdf']
+            if context['computer'] == 'work' and context['folder'] == 'Documents':
+                return ['workdoc1.xls', 'workdoc2.pdf']
+            return []
+
+        File.derivation(['computer', 'folder'], files)
+
+        x = ComputerSet()
+        self.assertEqual(x.items, ['home', 'work', 'library', 'school'])
+
+        f = x('home').folders
+        ff = f('Documents').files
+
+        self.assertEqual(ff.context['computer'], 'home')
+        self.assertEqual(ff.context['folder'], 'Documents')
+        self.assertEqual(ff.items, ['homedoc1.xls', 'homedoc2.pdf'])
