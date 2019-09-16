@@ -36,6 +36,10 @@ class CategoryItem:
         return set_directory[name]
 
     @classmethod
+    def category_item(cls, name):
+        return category_directory[name]
+
+    @classmethod
     def derivation(cls, context, accessor):
         Derivation(cls.__name__, context, accessor)
 
@@ -69,8 +73,8 @@ class CategoryItem:
         pass
 
     def __repr__(self):
-        vals = [v for (k, v) in self.context.items()]
-        return f"{self.__class__.__name__}({', '.join([self.identity, *vals])})"
+        context = [v for (k, v) in self.context.items()]
+        return f"{self.__class__.__name__}({', '.join([self.identity, *context])})"
 
     def __init_subclass__(cls, **kwargs):
         """
@@ -143,3 +147,11 @@ class CategorySet:
         if self.__class__.__name__ == other.__class__.__name__:
             if sorted(other.items) == sorted(self.items):
                 return True
+
+    @classmethod
+    def category_set(cls, name):
+        return set_directory[name]
+
+    @classmethod
+    def category_item(cls, name):
+        return category_directory[name]
