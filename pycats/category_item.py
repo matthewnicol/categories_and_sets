@@ -4,7 +4,6 @@ of things, leveraging set theory and category theory.
 """
 
 from pycats.derivation import Derivation
-from pycats.traversal import Traversal
 
 # When we make a new category, store it in here. On the individual categories,
 # use helper function that returns metadata to implement a traversal point.
