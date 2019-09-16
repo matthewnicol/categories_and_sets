@@ -28,11 +28,11 @@ class CategoryItem:
         """
 
         self._identity = self.__class__.__name__.lower()
-        self.context = {k: v for k,v in context.items()}
+        self.context = {k: v for k, v in context.items()}
         self.identity = str(identity)
 
     @classmethod
-    def _category_set(cls, name):
+    def category_set(cls, name):
         return set_directory[name]
 
     @classmethod
