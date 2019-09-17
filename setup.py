@@ -19,8 +19,8 @@ setup(
     ],
 
     # Packages and depencies
-    package_dir={'': 'pycats'},
-    packages=find_packages('pycats'),
+    package_dir={'pycats': 'pycats'},
+    packages=['pycats'],
     install_requires=[],
 
     # Scripts
