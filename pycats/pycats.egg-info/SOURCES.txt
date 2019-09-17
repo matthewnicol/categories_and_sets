@@ -1,6 +1,0 @@
-setup.py
-pycats/pycats.egg-info/PKG-INFO
-pycats/pycats.egg-info/SOURCES.txt
-pycats/pycats.egg-info/dependency_links.txt
-pycats/pycats.egg-info/entry_points.txt
-pycats/pycats.egg-info/top_level.txt
