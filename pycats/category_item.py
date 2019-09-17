@@ -2,7 +2,7 @@
 A rough framework for dealing with interconnected fuzzy categories
 of things, leveraging set theory and category theory.
 """
-
+from pycats.clsmethod_descriptor import classproperty
 from pycats.derivation import Derivation
 
 # When we make a new category, store it in here. On the individual categories,
@@ -43,12 +43,9 @@ class CategoryItem:
     def derivation(cls, context, accessor):
         Derivation(cls.__name__, context, accessor)
 
-    @classmethod
+    @classproperty
     def set(cls):
         return type(f"{cls.__name__}Set", (CategorySet,), {'single': cls})
-        #if not hasattr(cls, '_set'):
-        #    cls._set = type(f"{cls.__name__}Set", (CategorySet,), {'single': cls})
-        #return cls._set
 
     @classmethod
     def open(cls, identity, **context):
