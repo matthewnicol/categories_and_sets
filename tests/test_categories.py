@@ -113,3 +113,24 @@ class TestCategoryItem(unittest.TestCase):
         self.assertEqual(ff.context['computer'], 'home')
         self.assertEqual(ff.context['folder'], 'Documents')
         self.assertEqual(ff.items, ['homedoc1.xls', 'homedoc2.pdf'])
+
+    def test_lookup_name_traversal(self):
+        class Computer(CategoryItem):
+            folders = Traversal('Folder', lookup_key='lookup_key')
+
+        ComputerSet = Computer.set()
+
+        def folder_lookup(context, k):
+            if k == 'lookup_key':
+                return [1,2,3,4]
+            else:
+                return [4,5,6,7]
+
+        class Folder(CategoryItem):
+            pass
+
+        Folder.derivation(None, folder_lookup)
+
+        self.assertEqual(Computer('bob').folders, Folder.set()(items=[1,2,3,4]))
+
+

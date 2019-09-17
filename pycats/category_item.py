@@ -28,7 +28,7 @@ class CategoryItem:
         """
 
         self._identity = self.__class__.__name__.lower()
-        self.context = {k: v for k, v in context.items()}
+        self.context = {k: v for k, v in context.items() if k != 'LOOKUP_NAME'}
         self.identity = str(identity)
 
     @classmethod
@@ -90,13 +90,14 @@ class CategorySet:
 
     def __init__(self, items=None, **context):
         """
-        Record information about the items that are currently in this set.
+        Used to work with collections of a category.
         If items are passed into the items array, act as a container for those items
         """
 
         self.iterpos = 0
-        self.context = context
-        self.items = Derivation.find_items(self.single.__name__, context) if not items else items
+        self.context = {k: v for k, v in context.items() if k != 'LOOKUP_NAME'}
+        lookup_name = context['LOOKUP_NAME'] if 'LOOKUP_NAME' in context else None
+        self.items = Derivation.find_items(self.single.__name__, context, lookup_name=lookup_name) if not items else items
 
     def __iter__(self):
         """
@@ -141,6 +142,11 @@ class CategorySet:
         return self.single.open(self.items[item], **self.context)
 
     def __eq__(self, other):
+        """
+        We equal another set if we have the same name and contain the exact same items.
+        :param other: another CategorySet subclass
+        """
+
         if self.__class__.__name__ == other.__class__.__name__:
             if sorted(other.items) == sorted(self.items):
                 return True
