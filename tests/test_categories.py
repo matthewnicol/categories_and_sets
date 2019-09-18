@@ -208,6 +208,15 @@ class TestCategoryItem(unittest.TestCase):
         self.assertTrue(Team('lakers') in la_and_west)
         self.assertTrue(Team('clippers') in la_and_west)
 
+    def test_item_simplified(self):
+        class AThing(CategoryItem):
+            pass
+
+        s = AThing.set()
+        ss = s(items=[AThing('a'), 'b'])
+
+        self.assertEqual(ss.items, ['a', 'b'])
+
 
 
 
