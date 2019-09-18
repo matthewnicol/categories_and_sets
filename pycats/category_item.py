@@ -1,7 +1,13 @@
 """
-A rough framework for dealing with interconnected fuzzy categories
-of things, leveraging set theory and category theory.
+Categories are essentially very strict but robust interfaces for defining the objects in your system.
+Everything in your system is implicitly linked (or else it wouldn't be in your system).
+CategoryItems force you to make implicit links explicit.
+
+What you will want out of a category is often obvious given the context in which you access it in.
+A context is a list of the traversals made to get up to this point.
+Different contexts = different things in a CategorySet.
 """
+
 from pycats.clsmethod_descriptor import classproperty
 from pycats.derivation import Derivation
 
