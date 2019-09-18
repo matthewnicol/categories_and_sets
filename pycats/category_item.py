@@ -82,6 +82,9 @@ class CategoryItem:
         category_directory[cls.__name__] = cls
         set_directory[cls.__name__] = cls.set()
 
+    def __eq__(self, other):
+        return self.__class__.__name__ == other.__class__.__name__ and other.identity == self.identity
+
 
 class CategorySet:
     """
