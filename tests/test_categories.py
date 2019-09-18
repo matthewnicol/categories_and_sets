@@ -149,4 +149,70 @@ class TestCategoryItem(unittest.TestCase):
         self.assertEqual(op.opponent.identity, 'white')
         self.assertEqual(p, p.opponent.opponent)
 
+    def test_set_logic(self):
+
+        class Conference(CategoryItem):
+            team = Traversal('team')
+
+        Conference.derivation([], lambda x: ['eastern', 'western'])
+
+        class Team(CategoryItem):
+            pass
+
+        def conf_team_list(context):
+            if context['conference'] == 'eastern':
+                return [
+                    'bucks', 'raptors', '76ers', 'celtics',
+                    'pacers', 'nets', 'magic', 'pistons',
+                    'hornets', 'heat', 'wizards', 'hawks',
+                    'bulls', 'cavaliers', 'knicks'
+                ]
+            if context['conference'] == 'western':
+                return [
+                    'warriors', 'nuggets', 'trailblazers', 'rockets',
+                    'jazz', 'thunder', 'spurs', 'clippers', 'kings',
+                    'lakers', 'timberwolves', 'grizzlies', 'pelicans',
+                    'mavericks', 'suns'
+                ]
+
+        def state_team_list(context):
+            if context['state'] == 'LA':
+                return ['lakers', 'clippers', 'kings', 'warriors', 'suns']
+
+        Team.derivation(['conference'], conf_team_list)
+        Team.derivation(['state'], state_team_list)
+
+        st = Team.set()
+        la = st(state='LA')
+        west = st(conference='western')
+
+        la_and_west = (la & west)
+
+        self.assertTrue(Team('lakers') in la_and_west)
+        self.assertTrue(Team('clippers') in la_and_west)
+        self.assertTrue(Team('warriors') in la_and_west)
+        self.assertTrue(Team('kings') in la_and_west)
+        self.assertTrue(Team('suns') in la_and_west)
+        self.assertEqual(len(la_and_west), 5)
+
+        t1 = st(items=['lakers', 'warriors'])
+        t2 = st(items=['warriors', 'clippers'])
+
+        t1_or_t2 = (t1 | t2)
+        self.assertTrue(Team('lakers') in t1_or_t2)
+        self.assertTrue(Team('clippers') in t1_or_t2)
+        self.assertTrue(Team('warriors') in t1_or_t2)
+        self.assertEqual(len(t1_or_t2), 3)
+
+        t1_xor_t2 = (t1 ^ t2)
+        self.assertTrue(Team('lakers') in la_and_west)
+        self.assertTrue(Team('clippers') in la_and_west)
+
+
+
+
+
+
+
+
 

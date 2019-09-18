@@ -108,11 +108,29 @@ class CategorySet:
         lookup_name = context['LOOKUP_NAME'] if 'LOOKUP_NAME' in context else None
         self.items = Derivation.find_items(self.single.__name__, context, lookup_name=lookup_name) if not items else items
 
+    def __and__(self, other):
+        unique = [x for x in other.items + self.items if x in other.items and x in self.items]
+        return self.__class__(items=list(set(unique)))
+
+    def __or__(self, other):
+        new_items = [x for x in other.items + self.items]
+        return self.__class__(items=list(set(new_items)))
+
+    def __xor__(self, other):
+        new_items = [x for x in other.items if x not in self.items] + [x for x in self.items if x not in other.items]
+        return self.__class__(items=list(set(new_items)))
+
+    def __contains__(self, item):
+        return item.__class__ == self.single and item.identity in self.items
+
     def __iter__(self):
         """
         Implement iterator protocol for this set
         """
         return self
+
+    def __len__(self):
+        return len(self.items)
 
     def __next__(self):
         """
