@@ -27,27 +27,3 @@ class Traversal:
             **{self.rename_from if self.rename_from else owner.__name__.lower(): instance.identity},
             LOOKUP_NAME=self.lookup_key
         )
-
-
-class ItemTraversal(Traversal):
-    """ Metadata about the traversal from a CategoryItem to a different CategoryItem
-    """
-    def __init__(self, target, identity, assume_identity=None):
-        super().__init__(target, identity, assume_identity)
-        self.target_identity = identity
-
-    def __get__(self, instance, owner):
-        """
-        Lookup the target and instantiate as a category
-        :returns: CategoryItem
-        """
-        identity = self.target_identity if not callable(self.target_identity) else self.target_identity(instance.context)
-        x = owner.category_item(self.target)
-
-        return x(
-            identity,
-            **instance.context,
-            **{self.rename_from if self.rename_from else owner.__name__.lower(): instance.identity}
-        )
-
-
