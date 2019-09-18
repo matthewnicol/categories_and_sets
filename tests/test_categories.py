@@ -133,4 +133,20 @@ class TestCategoryItem(unittest.TestCase):
 
         self.assertEqual(Computer('bob').folders, Folder.set()(items=[1,2,3,4]))
 
+    def test_item_to_item_traversal(self):
+        class Player(CategoryItem):
+            @property
+            def opponent(self):
+                return Player(
+                    'black' if self.identity == 'white' else 'white',
+                   **{**self.context, 'opponent': self.identity}
+                )
+
+        p = Player('white')
+        op = p.opponent
+
+        self.assertEqual(op.identity, 'black')
+        self.assertEqual(op.opponent.identity, 'white')
+        self.assertEqual(p, p.opponent.opponent)
+
 
