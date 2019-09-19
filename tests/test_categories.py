@@ -207,8 +207,9 @@ class TestCategoryItem(unittest.TestCase):
         self.assertEqual(len(t1_or_t2), 3)
 
         t1_xor_t2 = (t1 ^ t2)
-        self.assertTrue(Team('lakers') in la_and_west)
-        self.assertTrue(Team('clippers') in la_and_west)
+        self.assertTrue(Team('lakers') in t1_xor_t2)
+        self.assertTrue(Team('clippers') in t1_xor_t2)
+        self.assertTrue(len(t1_xor_t2) == 2)
 
     def test_item_simplified(self):
         class AThing(CategoryItem):
