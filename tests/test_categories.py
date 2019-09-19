@@ -33,7 +33,7 @@ class TestCategoryItem(unittest.TestCase):
         )
 
         FolderSet = Folder.set()
-        self.assertEqual(FolderSet(filesystem='ourfs').items, ['/home/ourfs/files'])
+        self.assertEqual(FolderSet(filesystem='ourfs'), FolderSet(items=['/home/ourfs/files']))
 
     def test_basic_traversal(self):
         class Folder(CategoryItem):
@@ -67,7 +67,7 @@ class TestCategoryItem(unittest.TestCase):
         sf = x.sub_folders
         self.assertEqual(sf.context['parent_folder'], 'test_folder')
 
-        self.assertEqual(sf.items, ['/test_folder/files', '/test_folder/cache'])
+        self.assertEqual(sf, Folder.set()(items=['/test_folder/files', '/test_folder/cache']))
 
     def test_multiple_traversals(self):
         class Computer(CategoryItem):
@@ -105,14 +105,16 @@ class TestCategoryItem(unittest.TestCase):
         File.derivation(['computer', 'folder'], files)
 
         x = ComputerSet()
-        self.assertEqual(x.items, ['home', 'work', 'library', 'school'])
+        self.assertEqual(x, ComputerSet(items=['home', 'work', 'library', 'school']))
 
         f = x('home').folders
         ff = f('Documents').files
 
+        Fset = File.set()
+
         self.assertEqual(ff.context['computer'], 'home')
         self.assertEqual(ff.context['folder'], 'Documents')
-        self.assertEqual(ff.items, ['homedoc1.xls', 'homedoc2.pdf'])
+        self.assertEqual(ff, Fset(items=['homedoc1.xls', 'homedoc2.pdf']))
 
     def test_lookup_name_traversal(self):
         class Computer(CategoryItem):
@@ -215,7 +217,13 @@ class TestCategoryItem(unittest.TestCase):
         s = AThing.set()
         ss = s(items=[AThing('a'), 'b'])
 
-        self.assertEqual(ss.items, ['a', 'b'])
+        self.assertEqual(ss, AThing.set()(items=['a', 'b']))
+
+        ss = s(items=[AThing('a'), 'a', 'b'])
+
+        self.assertTrue('a' in ss.items)
+        self.assertTrue('b' in ss.items)
+        self.assertTrue(len(ss) == 2)
 
 
 
