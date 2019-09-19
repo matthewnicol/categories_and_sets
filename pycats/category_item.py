@@ -106,8 +106,11 @@ class CategorySet:
         self.iterpos = 0
         self.context = {k: v for k, v in context.items() if k != 'LOOKUP_NAME'}
         lookup_name = context['LOOKUP_NAME'] if 'LOOKUP_NAME' in context else None
-        self.items = Derivation.find_items(self.single.__name__, context, lookup_name=lookup_name) if not items else items
-        self.items = [x.identity if isinstance(x, self.single) else x for x in self.items ]
+        if items:
+            self.items = list(set([x.identity if isinstance(x, self.single) else x for x in items]))
+        else:
+            self.items = list(set(Derivation.find_items(self.single.__name__, context, lookup_name=lookup_name)))
+
 
     def __and__(self, other):
         unique = [x for x in other.items + self.items if x in other.items and x in self.items]
