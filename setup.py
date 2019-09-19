@@ -3,10 +3,9 @@ from setuptools import setup, find_packages
 setup(
     # Basic info
     name='pycats',
-    version='0.0.1',
+    version='0.1.0',
     author='Matthew Nicol',
     author_email='matthew.b.nicol@gmail.com',
-    url='https://github.com/fabiommendes/python-boilerplate',
     description='Python categories system.',
     long_description='Python categories system.',
     classifiers=[
